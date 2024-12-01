@@ -228,7 +228,7 @@ export default class Groups extends Extension {
     }
 
     private shouldPublishPayloadForGroup(group: Group, payload: KeyValue): boolean {
-        logger.debug(`shouldPublishPayloadForGroup(${group.name}, ${payload})`)
+        logger.debug(`shouldPublishPayloadForGroup(${group.name}, ${JSON.stringify(payload)})`)
         logger.debug(`group.options.off_state == ${group.options.off_state}`)
         logger.debug(`this.areAllMembersOffOrClosed(group) == ${this.areAllMembersOffOrClosed(group)}`)
         return (
