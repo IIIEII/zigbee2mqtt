@@ -241,6 +241,7 @@ export default class Groups extends Extension {
 
     private areAllMembersOffOrClosed(group: Group): boolean {
         logger.debug(`areAllMembersOffOrClosed#group == ${group.name}`)
+        logger.debug(`areAllMembersOffOrClosed#group.zh.members == ${JSON.stringify(group.zh.members)}`)
         for (const member of group.zh.members) {
             const device = this.zigbee.resolveEntity(member.getDevice())!;
             logger.debug(`areAllMembersOffOrClosed#device == ${device.name}`)
