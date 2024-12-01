@@ -10,9 +10,11 @@ COPY package*.json tsconfig.json index.js ./
 COPY lib ./lib
 
 RUN apk add --no-cache --virtual .buildtools make gcc g++ python3 linux-headers git npm && \
-    npm ci --production --no-audit --no-optional --no-update-notifier && \
+    npm ci && \
     # Serialport needs to be rebuild for Alpine https://serialport.io/docs/9.x.x/guide-installation#alpine-linux
     npm rebuild --build-from-source && \
+    npm install typescript -g && \
+    npm run build && \
     apk del .buildtools
 
 # Release
@@ -26,7 +28,7 @@ LABEL org.opencontainers.image.documentation="https://www.zigbee2mqtt.io/"
 LABEL org.opencontainers.image.source="https://github.com/Koenkk/zigbee2mqtt"
 
 COPY --from=dependencies_and_build /app/node_modules ./node_modules
-COPY dist ./dist
+COPY --from=dependencies_and_build /app/dist ./dist
 COPY package.json LICENSE index.js data/configuration.yaml data/configuration.example.yaml ./
 
 COPY docker/docker-entrypoint.sh /usr/local/bin/
