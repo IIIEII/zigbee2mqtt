@@ -159,6 +159,9 @@ export default class Groups extends Extension {
 
     private shouldPublishPayloadForGroup(group: Group, payload: KeyValue, endpointName: string | undefined): boolean {
         const stateKey = endpointName ? `state_${endpointName}` : 'state';
+        logger.debug(`shouldPublishPayloadForGroup(${group.name}, ${JSON.stringify(payload)}, ${endpointName})`)
+        logger.debug(`group.options.off_state == ${group.options.off_state}`)
+        logger.debug(`this.areAllMembersOffOrClosed(group) == ${this.areAllMembersOffOrClosed(group)}`)
         return (
             group.options.off_state === 'last_member_state' ||
             !payload ||
