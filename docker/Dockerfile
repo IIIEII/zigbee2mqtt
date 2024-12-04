@@ -1,16 +1,19 @@
 FROM alpine:3.18.4 AS base
 
-ENV NODE_ENV=production
+ENV NODE_ENV=dev
 WORKDIR /app
 RUN apk add --no-cache tzdata eudev tini nodejs
 
 # Dependencies and build
 FROM base AS deps
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml tsconfig.json index.js ./
+COPY lib ./lib
+
 RUN apk add make gcc g++ python3 linux-headers npm && \
     npm install -g pnpm && \
-    pnpm install --frozen-lockfile --no-optional
+    pnpm install --frozen-lockfile && \
+    pnpm run build
 
 # Release
 FROM base AS release
@@ -23,7 +26,7 @@ LABEL org.opencontainers.image.documentation="https://www.zigbee2mqtt.io/"
 LABEL org.opencontainers.image.source="https://github.com/Koenkk/zigbee2mqtt"
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY dist ./dist
+COPY --from=deps /app/dist ./dist
 COPY package.json LICENSE index.js data/configuration.example.yaml ./
 
 COPY docker/docker-entrypoint.sh /usr/local/bin/
